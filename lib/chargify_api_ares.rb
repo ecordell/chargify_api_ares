@@ -117,7 +117,6 @@ module Chargify
     end
     
 	  def transactions()
-		  #Transaction.new get(:transactions)
 		  Transaction.find(:all, :params =>{:subscription_id => self.id})
 	  end
     
@@ -139,6 +138,7 @@ module Chargify
     end
     
   end
+  
   class Product < Base
     def self.find_by_handle(handle)
       Product.new get(:lookup, :handle => handle)
