@@ -61,9 +61,11 @@ module Chargify
       if site.blank?
         Base.site                     = "https://#{subdomain}.chargify.com"
         Subscription::Component.site  = "https://#{subdomain}.chargify.com/subscriptions/:subscription_id"
+        Subscription::Transaction.site = "https://#{subdomain}.chargify.com/subscriptions/:subscription_id"
       else
         Base.site                     = site
         Subscription::Component.site  = site + "/subscriptions/:subscription_id"
+        Subscription::Transaction.site  = site + "/subscriptions/:subscription_id"
       end
     end
   end
@@ -114,6 +116,11 @@ module Chargify
       Component.find(:all, :params => params)
     end
     
+	  def transactions()
+		  #Transaction.new get(:transactions)
+		  Transaction.find(:all, :params =>{:subscription_id => self.id})
+	  end
+    
     # Perform a one-time charge on an existing subscription.
     # For more information, please see the one-time charge API docs available 
     # at: http://support.chargify.com/faqs/api/api-charges
@@ -127,8 +134,11 @@ module Chargify
         self.component_id
       end
     end
+    
+    class Transaction < Base
+    end
+    
   end
-
   class Product < Base
     def self.find_by_handle(handle)
       Product.new get(:lookup, :handle => handle)
@@ -149,4 +159,6 @@ module Chargify
   
   class Component < Base
   end
+  class Transaction < Base
+  end 
 end
